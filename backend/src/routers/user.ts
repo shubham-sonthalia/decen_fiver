@@ -6,13 +6,17 @@ import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 import { JWT_SECRET } from "..";
 import { authMiddleware } from "../middleware";
 import { createTaskInput } from "../types";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 const DEFAULT_TITLE = "Select the most clickable thumbnail";
 
+//@ts-ignore
 const s3Client = new S3Client({
   credentials: {
-    accessKeyId: "AKIAXWZR5RGXYRDFB662",
-    secretAccessKey: "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",
+    accessKeyId: process.env.S3_ACCESS_USER_ID,
+    secretAccessKey: process.env.SECRET_ACCESS_KEY,
   },
   region: "ap-south-1",
 });
