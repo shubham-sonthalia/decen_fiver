@@ -61,14 +61,18 @@ userRouter.get("/task", authMiddleware, async (req, res) => {
   const taskId: string = req.query.taskId;
 
   // @ts-ignore
-  const userId: string = req.query.userId;
+  const userId: string = req.userId;
 
   const taskDetails = await prismaClient.task.findFirst({
     where: {
       user_id: Number(userId),
       id: Number(taskId),
     },
+    include: {
+      options: true,
+    },
   });
+  console.log(taskDetails);
   if (!taskDetails) {
     return res.status(411).json({
       message: "You don't have access to this task",
@@ -86,23 +90,24 @@ userRouter.get("/task", authMiddleware, async (req, res) => {
     string,
     {
       count: number;
-      task: {
+      option: {
         imageUrl: string;
       };
     }
   > = {};
-  responses.forEach((r) => {
-    if (!result[r.option_id]) {
-      result[r.option_id] = {
-        count: 1,
-        task: {
-          imageUrl: r.option.image_url,
-        },
-      };
-    } else {
-      result[r.option_id].count++;
-    }
+  taskDetails.options.forEach((option) => {
+    result[option.id] = {
+      count: 0,
+      option: {
+        imageUrl: option.image_url,
+      },
+    };
   });
+
+  responses.forEach((r) => {
+    result[r.option_id].count++;
+  });
+  return res.json({ result });
 });
 
 userRouter.post("/signin", async (req, res) => {

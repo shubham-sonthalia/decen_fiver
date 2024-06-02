@@ -3,6 +3,7 @@ import userRouter from "./routers/user";
 import workerRouter from "./routers/worker";
 
 export const JWT_SECRET = "sonthalia123";
+export const WORKER_JWT_SECRET = JWT_SECRET + "worker";
 
 const app = express();
 
